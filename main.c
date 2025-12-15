@@ -11,13 +11,12 @@
 #define MAX_LINE_LENGTH 1024
 
 typedef struct {
-    char *id;           // Identifiant unique de l'usine (clé de tri pour l'AVL)
-    double max_capacity; // Capacité maximale de traitement (k.m³) [cite: 86, 145]
-    double total_captured; // Volume total capté par les sources (k.m³) [cite: 147]
-    double total_treated;  // Volume total réellement traité (k.m³) [cite: 150]
+    char *id;           
+    double max_capacity; 
+    double total_captured; 
+    double total_treated;  
 } FactoryData;
 
-// 2. Nœud de l'AVL (pour un accès rapide aux usines) [cite: 203]
 typedef struct AVLFactoryNode {
     FactoryData data;
     int height;
@@ -121,12 +120,9 @@ static void update_height(AVLFactoryNode *node) {
 static AVLFactoryNode *right_rotate(AVLFactoryNode *y) {
     AVLFactoryNode *x = y->left;
     AVLFactoryNode *T2 = x->right;
-
-    // Effectuer la rotation
     x->right = y;
     y->left = T2;
 
-    // Mise à jour des hauteurs
     update_height(y);
     update_height(x);
 
@@ -137,11 +133,9 @@ static AVLFactoryNode *left_rotate(AVLFactoryNode *x) {
     AVLFactoryNode *y = x->right;
     AVLFactoryNode *T2 = y->left;
 
-    // Effectuer la rotation
     y->left = x;
     x->right = T2;
 
-    // Mise à jour des hauteurs
     update_height(x);
     update_height(y);
 
@@ -184,7 +178,7 @@ AVLFactoryNode *insert_factory(AVLFactoryNode *node, const char *id, double capa
         if (capacity > 0.0) {
              node->data.max_capacity = capacity;
         }
-        return node; // Ne rien faire ou retourner
+        return node; 
     }
 
     update_height(node);
@@ -255,7 +249,7 @@ static void collect_factory_data(AVLFactoryNode *root, const char *criteria, Fac
         }
     }
 
-    (*array)[*index].id = root->data.id; // Utiliser le pointeur existant (ne pas copier)
+    (*array)[*index].id = root->data.id; 
     if (strcmp(criteria, "max") == 0) {
         (*array)[*index].volume = root->data.max_capacity;
     } else if (strcmp(criteria, "src") == 0) {
@@ -263,7 +257,6 @@ static void collect_factory_data(AVLFactoryNode *root, const char *criteria, Fac
     } else if (strcmp(criteria, "real") == 0) {
         (*array)[*index].volume = root->data.total_treated;
     } else {
-        // Gérer le cas inconnu (ou ignorer)
         (*array)[*index].volume = 0.0;
     }
 
@@ -290,7 +283,7 @@ int generate_histogram_data(AVLFactoryNode *root, const char *criteria, const ch
         items = (FactorySortItem *)realloc(items, count * sizeof(FactorySortItem));
     } else {
         free(items);
-        return 1; // Aucun élément à traiter
+        return 1; 
     }
 
     qsort(items, count, sizeof(FactorySortItem), compare_factory_items);
@@ -309,7 +302,7 @@ int generate_histogram_data(AVLFactoryNode *root, const char *criteria, const ch
     }
 
     fclose(f);
-    free(items); // Libérer le tableau temporaire
+    free(items); 
     return 0;
 }
 
@@ -380,7 +373,7 @@ void add_child_link(DistributionNode *parent, DistributionNode *child, float lea
     ChildLink *new_link = (ChildLink *)malloc(sizeof(ChildLink));
     if (new_link == NULL) { /* Handle error */ return; }
 
-    new_link->aval_id = strdup(child->id); // Dupliquer l'ID aval pour la construction
+    new_link->aval_id = strdup(child->id); 
     new_link->child_node = child;
     new_link->leak_percentage = leak_pct;
 
@@ -397,7 +390,6 @@ void recursive_leak_calculation(DistributionNode *node, double volume_in, double
     }
 
     if (num_children == 0) {
-        // Terminus (Usager ou fin de réseau)
         return;
     }
 
@@ -431,11 +423,11 @@ int calculate_leaks(const char *csv_filepath, const char *factory_id, const char
     AVLFactoryNode *target_factory_node = search_factory(factory_root, factory_id);
     if (target_factory_node == NULL) {
         fprintf(stderr, "Erreur : Usine ID '%s' introuvable.\n", factory_id);
-        result = 2; // Erreur spécifique : ID inconnu
+        result = 2; 
         goto cleanup;
     }
 
-    double initial_volume = target_factory_node->data.total_treated; // Volume traité réel
+    double initial_volume = target_factory_node->data.total_treated; 
 
     if (parse_data_for_graph(csv_filepath, factory_root, &search_root) != 0) {
         fprintf(stderr, "Erreur de construction du graphe de distribution.\n");
@@ -607,7 +599,6 @@ int parse_data_for_graph(const char *filepath, AVLFactoryNode *factory_root, AVL
         }
 
         if (strlen(aval_id) > 0 && strncmp(aval_id, "usager_", 7) != 0) {
-            // Créer un nœud et l'ajouter à l'AVL de recherche s'il n'existe pas
             if (search_distribution_node(*search_root, aval_id) == NULL) {
                 const char *f_id = (strlen(factory_id) > 0) ? factory_id : aval_id;
                 DistributionNode *node = create_distribution_node(aval_id, f_id);
@@ -755,3 +746,4 @@ int main(int argc, char *argv[]) {
     }
 
 }
+
