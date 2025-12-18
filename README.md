@@ -1,3 +1,4 @@
 # Projet-P2-Info3
 make cleanfile
 make clean && make
+./script.sh c-wildwatr_v0.dat histo max
