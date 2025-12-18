@@ -56,8 +56,8 @@ if [ "$CMD" = "histo" ]; then
     echo "[3/4] Préparation des données pour Gnuplot..."
     # Tri
     tail -n +2 "$DAT" | sort -t';' -k2 -nr > tmp/sorted.dat
-    head -n 10 tmp/sorted.dat > tmp/top10.dat
-    tail -n 50 tmp/sorted.dat | sort -t';' -k2 -n > tmp/bot50.dat
+    //head -n 10 tmp/sorted.dat >> tmp/top10.dat
+    //tail -n 50 tmp/sorted.dat | sort -t';' -k2 -n >> tmp/bot50.dat
     
     # Vérification que le tri a marché
     if [ ! -s "tmp/top10.dat" ]; then
