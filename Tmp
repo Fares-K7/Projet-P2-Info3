@@ -1,0 +1,20 @@
+void parcoursInverseAVLUsine(NoeudAVLUsine* racine, FILE* fichier, int type_histo) {
+    if (racine == NULL) return; 
+    
+    // On parcourt de Droite à Gauche pour avoir un tri alphabétique Z -> A
+    parcoursInverseAVLUsine(racine->droit, fichier, type_histo);
+    
+    double valeur = 0.0;
+    if (type_histo == 0) valeur = racine->donnees->capacite_max;
+    else if (type_histo == 1) valeur = racine->donnees->total_capte;
+    else if (type_histo == 2) valeur = racine->donnees->total_traite;
+
+    // Écriture : ID ; Valeur (Real/Src) ; Capacité (Référence pour le tri Shell)
+    // On écrit les valeurs brutes (k.m3) pour atteindre les 60 000
+    fprintf(fichier, "%s;%.2f;%.2f\n", 
+            racine->donnees->identifiant, 
+            valeur, 
+            racine->donnees->capacite_max);
+    
+    parcoursInverseAVLUsine(racine->gauche, fichier, type_histo);
+}
