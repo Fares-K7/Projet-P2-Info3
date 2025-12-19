@@ -32,5 +32,5 @@ void definirVolumeMax(NoeudAVL* n, float v);
 // Entrées/Sorties
 int ecrireAVLDansFichier(AVL* avl, FILE* f, const char* mode);
 int compterNoeuds(AVL* avl);
-
+void ecrireAVLDansFichier_Inverse(AVL* avl, FILE* f, const char* mode);
 #endif
