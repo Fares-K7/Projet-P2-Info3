@@ -177,3 +177,35 @@ int compterNoeuds(AVL* avl) {
     if (!avl) return 0;
     return compter_rec(avl->racine);
 }
+
+// Fonction récursive interne : Parcours Droite -> Racine -> Gauche (Z vers A)
+void _ecrireAVL_Inverse(NoeudAVL* n, FILE* f, const char* mode) {
+    if (n == NULL) return;
+
+    // 1. D'abord à DROITE (Correction ici : 'droit' au lieu de 'droite')
+    _ecrireAVL_Inverse(n->droit, f, mode);
+
+    // 2. Traitement du nœud courant
+    // Correction ici : on tente 'identifiant' au lieu de 'id'. 
+    // Si ça plante encore, vérifie dans avl.h le nom du champ (peut-être 'elmt' ou 'station')
+    
+    if (strcmp(mode, "max") == 0) {
+        fprintf(f, "%s;%.3f\n", n->identifiant, n->volumeMax);
+    } 
+    else if (strcmp(mode, "src") == 0) {
+        fprintf(f, "%s;%.3f\n", n->identifiant, n->volumeCapte);
+    } 
+    else if (strcmp(mode, "real") == 0) {
+        fprintf(f, "%s;%.3f\n", n->identifiant, n->volumeTraite);
+    }
+
+    // 3. Enfin à GAUCHE (On suppose que 'gauche' est correct, sinon c'est 'filsGauche')
+    _ecrireAVL_Inverse(n->gauche, f, mode);
+}
+
+// Fonction principale
+void ecrireAVLDansFichier_Inverse(AVL* avl, FILE* f, const char* mode) {
+    if (avl != NULL) {
+        _ecrireAVL_Inverse(avl->racine, f, mode);
+    }
+}
