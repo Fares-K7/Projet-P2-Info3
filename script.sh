@@ -41,49 +41,56 @@ echo "[2/4] Exécution du programme C..."
 if [ "$CMD" = "histo" ]; then
     DAT="output/vol_${OPT}.dat"
 
+    # Vérification simple et robuste
     if [ ! -f "$DAT" ]; then
-        echo "ERREUR : Fichier $DAT introuvable."
+        echo "ERREUR : Le fichier $DAT n'existe pas. Vérifie le 'make'."
         exit 1
     fi
 
     echo "[3/4] Préparation Gnuplot..."
-    
-    # 1. Filtrage des zéros et Tri (Décroissant)
+
+    # 1. On trie les données (décroissant) et on filtre les 0
     tail -n +2 "$DAT" | grep -v ";0\.000" | sort -t';' -k2 -nr > tmp/sorted.dat
 
-    NB_LIGNES=$(wc -l < tmp/sorted.dat)
-    if [ "$NB_LIGNES" -eq 0 ]; then
-        echo "ATTENTION : Aucune donnée non-nulle trouvée."
+    # Vérification qu'il y a des données
+    if [ ! -s tmp/sorted.dat ]; then
+        echo "Attention : Aucune donnée à afficher (fichier vide ou que des zéros)."
         exit 0
     fi
 
-    # 2. Extraction : TOP 10 et BOTTOM 50
+    # 2. On extrait le TOP 10 (Max) et les 50 plus petits (Min)
     head -n 10 tmp/sorted.dat > tmp/top10.dat
-    tail -n 50 tmp/sorted.dat > tmp/bot50.dat  # <-- CHANGEMENT ICI (50 lignes)
+    tail -n 50 tmp/sorted.dat > tmp/bot50.dat
 
-    echo "[4/4] Génération des graphiques..."
+    echo "[4/4] Génération des graphiques avec légendes..."
 
-    # Graphique MAX (Top 10) - Reste inchangé
+    # --- Graphique MAX ---
+    # Ajout de xlabel et ylabel pour avoir "plus de valeurs" affichées
     gnuplot -e "
         set terminal png size 1200,800; 
         set output 'tests/${OPT}_max.png'; 
         set title '${OPT} Max (Top 10)'; 
+        set xlabel 'Identifiant Station';     
+        set ylabel 'Volume (m3)';             
         set style data histograms; set style fill solid; set boxwidth 0.5; 
         set xtics rotate by -45 scale 0; set datafile separator ';'; set grid y;
-        plot 'tmp/top10.dat' using 2:xtic(1) title '${OPT} Max' linecolor rgb '#228B22'
+        plot 'tmp/top10.dat' using 2:xtic(1) title 'Max' linecolor rgb '#228B22'
     "
     
-    # Graphique MIN (Bottom 50) - Modifié pour 50 valeurs
+    # --- Graphique MIN ---
+    # Ici on met la police un peu plus petite sur X car il y a 50 valeurs
     gnuplot -e "
         set terminal png size 1200,800; 
         set output 'tests/${OPT}_min.png'; 
         set title '${OPT} Min (Bottom 50)'; 
+        set xlabel 'Identifiant Station';     
+        set ylabel 'Volume (m3)';             
         set style data histograms; set style fill solid; set boxwidth 0.5; 
         set xtics rotate by -90 scale 0 font ',8'; set datafile separator ';'; set grid y;
-        plot 'tmp/bot50.dat' using 2:xtic(1) title '${OPT} Min' linecolor rgb '#DC143C'
+        plot 'tmp/bot50.dat' using 2:xtic(1) title 'Min' linecolor rgb '#DC143C'
     "
 
-    echo "TERMINE : tests/${OPT}_max.png (Top 10) et tests/${OPT}_min.png (Bottom 50) générés."
+    echo "Terminé : Graphiques générés dans le dossier tests/."
 fi
 # ==========================================
 # TRAITEMENT FUITES (LEAKS)

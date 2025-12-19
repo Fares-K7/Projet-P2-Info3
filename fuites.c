@@ -70,7 +70,10 @@ int traiterFuites(const char* fichierCSV, const char* idRecherche) {
         
         // Si la fuite est négative (impossible physiquement mais possible si données bizarres), on met 0 ou on laisse
         // Pour l'affichage, on garde la valeur brute.
-        
+        if (fuite < 0) {
+            printf("Info : Fuite négative (%.2f). On prend la valeur positive.\n", fuite);
+            fuite = -fuite; // ou fabsf(fuite)
+        }
         fprintf(out, "%s;%.1f\n", idRecherche, fuite);
         printf(" -> Usine trouvée. Entrée: %.1f | Sortie: %.1f | Fuite: %.1f\n", entrant, sortant, fuite);
     } else {
