@@ -5,6 +5,8 @@ make clean && make
 
 ./script.sh c-wildwater_v0.dat histo max
 
+pour l'autorisation:
+
 chmod u+x script.sh
 
 histogrammes :
