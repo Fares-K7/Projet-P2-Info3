@@ -84,7 +84,7 @@ int traiterHistogramme(const char* fichierCSV, const char* mode) {
 
     // Écriture : il faut adapter ecrireAVLDansFichier dans avl.c pour qu'il sache quelle variable écrire
     // ASTUCE : On passe 'mode' à la fonction d'écriture
-    ecrireAVLDansFichier(avl, out, mode);
+    ecrireAVLDansFichier_Inverse(avl, out, mode);
     
     fclose(out);
     libererAVL(avl);
