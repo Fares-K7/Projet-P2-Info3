@@ -60,7 +60,7 @@ if [ "$CMD" = "histo" ]; then
 
     # 2. On extrait le TOP 10 (Max) et les 50 plus petits (Min)
     head -n 10 tmp/sorted.dat > tmp/top10.dat
-    tail -n 50 tmp/sorted.dat > tmp/bot50.dat
+    tail -n 50 tmp/sorted.dat > tmp/50derniers.dat
 
     echo "[4/4] Génération des graphiques avec légendes..."
 
@@ -69,7 +69,7 @@ if [ "$CMD" = "histo" ]; then
     gnuplot -e "
         set terminal png size 1200,800; 
         set output 'tests/${OPT}_max.png'; 
-        set title '${OPT} Max (Top 10)'; 
+        set title 'volume-${OPT} (Top 10)'; 
         set xlabel 'Identifiant Station';     
         set ylabel 'Volume (m3)';             
         set style data histograms; set style fill solid; set boxwidth 0.5; 
@@ -82,12 +82,12 @@ if [ "$CMD" = "histo" ]; then
     gnuplot -e "
         set terminal png size 1200,800; 
         set output 'tests/${OPT}_min.png'; 
-        set title '${OPT} Min (Bottom 50)'; 
+        set title 'volume-${OPT} (50 Derniers)'; 
         set xlabel 'Identifiant Station';     
         set ylabel 'Volume (m3)';             
         set style data histograms; set style fill solid; set boxwidth 0.5; 
         set xtics rotate by -90 scale 0 font ',8'; set datafile separator ';'; set grid y;
-        plot 'tmp/bot50.dat' using 2:xtic(1) title 'Min' linecolor rgb '#DC143C'
+        plot 'tmp/50derniers.dat' using 2:xtic(1) title 'Min' linecolor rgb '#DC143C'
     "
 
     echo "Terminé : Graphiques générés dans le dossier tests/."
