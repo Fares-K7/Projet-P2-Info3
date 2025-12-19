@@ -36,12 +36,26 @@ int lireLigneCSV(FILE* f, LigneCSV* ligne) {
 }
 
 TypeLigneCSV identifierTypeLigne(const LigneCSV* l) {
-    if (strcmp(l->col1, "-") == 0 && strstr(l->col3, "Facility")) return TYPE_SOURCE_USINE;
-    if (strstr(l->col2, "Facility") && strcmp(l->col3, "-") == 0) return TYPE_USINE_NOEUD;
-    if (strstr(l->col2, "Facility") && strstr(l->col3, "Storage")) return TYPE_USINE_STOCKAGE;
-    if (strstr(l->col2, "Storage") && strstr(l->col3, "Junction")) return TYPE_STOCKAGE_JONCTION;
-    if (strstr(l->col2, "Junction") && strstr(l->col3, "Service")) return TYPE_JONCTION_RACCORDEMENT;
-    if (strstr(l->col2, "Service") && strstr(l->col3, "Cust")) return TYPE_RACCORDEMENT_USAGER;
+    // Analyse de la colonne 2 (Source, Plant, etc.)
+    
+    // CAS 1 : C'est une SOURCE (ex: Source, Well)
+    // Correspond à HVB
+    if (strstr(l->col2, "Source") || strstr(l->col2, "Well")) {
+        return TYPE_SOURCE_USINE;
+    }
+
+    // CAS 2 : C'est une USINE/STATION (ex: Plant, Station)
+    // Correspond à HVA
+    if (strstr(l->col2, "Plant") || strstr(l->col2, "Station") || strstr(l->col2, "Fountain")) {
+        return TYPE_USINE_NOEUD;
+    }
+
+    // CAS 3 : C'est un CONSOMMATEUR (ex: Unit, Module)
+    // Correspond à LV
+    if (strstr(l->col2, "Unit") || strstr(l->col2, "Module") || strstr(l->col2, "Terminal")) {
+        return TYPE_RACCORDEMENT_USAGER; // Ou TYPE_NOEUD_CLIENT
+    }
+
     return TYPE_AUTRE;
 }
 

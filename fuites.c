@@ -1,125 +1,84 @@
 #include "fuites.h"
-#include "arbre.h"
+#include "avl.h"
 #include "fichier.h"
 #include "utils.h"
-#include <string.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-// Structure AVL interne pour indexer les noeuds de l'arbre N-aire
-// Permet de retrouver le parent en O(log n)
-typedef struct AVLRef {
-    char id[100];
-    Noeud* ptr;
-    struct AVLRef *g, *d;
-} AVLRef;
+// Cette fonction remplace ton approche récursive par une approche AVL "Bilan"
+// C'est beaucoup plus simple car on a déjà stocké les sommes dans l'AVL.
 
-static AVLRef* insRef(AVLRef* r, const char* id, Noeud* ptr) {
-    if (!r) {
-        AVLRef* n = malloc(sizeof(AVLRef));
-        strcpy(n->id, id); n->ptr = ptr; n->g = n->d = NULL;
-        return n;
-    }
-    int cmp = strcmp(id, r->id);
-    if (cmp < 0) r->g = insRef(r->g, id, ptr);
-    else if (cmp > 0) r->d = insRef(r->d, id, ptr);
-    return r;
-}
+int traiterFuites(const char* fichierCSV, const char* idRecherche) {
+    printf("Analyse des fuites pour l'usine : '%s'...\n", idRecherche);
 
-static Noeud* findRef(AVLRef* r, const char* id) {
-    while (r) {
-        int cmp = strcmp(id, r->id);
-        if (cmp == 0) return r->ptr;
-        if (cmp < 0) r = r->g; else r = r->d;
-    }
-    return NULL;
-}
-
-static void freeRef(AVLRef* r) {
-    if (r) { freeRef(r->g); freeRef(r->d); free(r); }
-}
-
-static double calculerFuitesRec(Noeud* n, double volEntrant, double* totalFuites) {
-    if (!n) return 0;
-    double fuiteIci = volEntrant * (n->taux / 100.0);
-    *totalFuites += fuiteIci;
-    double volRestant = volEntrant - fuiteIci;
-    
-    if (n->nbEnfants > 0) {
-        double volParEnfant = volRestant / n->nbEnfants;
-        for (int i=0; i<n->nbEnfants; i++) {
-            calculerFuitesRec(n->enfants[i], volParEnfant, totalFuites);
-        }
-    }
-    return fuiteIci;
-}
-
-int traiterFuites(const char* fichierCSV, const char* idUsine) {
-    printf("Traitement fuites pour %s...\n", idUsine);
+    // 1. Initialisation
+    AVL* avl = creerAVL();
     FILE* f = ouvrirFichierCSV(fichierCSV);
-    if (!f) return 1;
-
-    Noeud* racine = creerNoeud(idUsine);
-    AVLRef* index = NULL;
-    index = insRef(index, idUsine, racine);
+    if (!f) { libererAVL(avl); return 1; }
 
     LigneCSV ligne;
-    char idAmont[TAILLE_CHAMP], idAval[TAILLE_CHAMP];
-    float taux;
+    char id[TAILLE_CHAMP];
+    float val;
 
-    // Phase 1 : Construction de l'arbre
+    // 2. Remplissage de l'AVL
+    // On parcourt tout le fichier pour additionner :
+    // - Tout ce qui RENTRE dans une station (Source -> Station)
+    // - Tout ce qui SORT d'une station (Station -> Client)
     while (lireLigneCSV(f, &ligne)) {
         TypeLigneCSV type = identifierTypeLigne(&ligne);
-        
-        if (type == TYPE_USINE_STOCKAGE || type == TYPE_STOCKAGE_JONCTION ||
-            type == TYPE_JONCTION_RACCORDEMENT || type == TYPE_RACCORDEMENT_USAGER) {
+
+        // CAS 1 : Apport (Ce qui rentre)
+        if (type == TYPE_SOURCE_USINE) {
+            extraireIDAval(&ligne, id);   // ID de la Station (Destination)
+            extraireVolume(&ligne, &val); // Volume
             
-            extraireIDAmont(&ligne, idAmont);
-            Noeud* parent = findRef(index, idAmont);
-            
-            if (parent) {
-                extraireIDAval(&ligne, idAval);
-                extraireTaux(&ligne, &taux);
-                Noeud* enfant = creerNoeud(idAval);
-                enfant->taux = taux;
-                ajouterEnfant(parent, enfant);
-                index = insRef(index, idAval, enfant);
-            }
+            insererAVL(avl, id);
+            NoeudAVL* n = rechercherUsine(avl, id);
+            // On stocke le TOTAL ENTRANT dans volumeCapte
+            if (n) ajouterVolumeCapte(n, val); 
         }
-    }
-    
-    // Phase 2 : Calcul du volume initial
-    rewind(f);
-    double volumeInitial = 0;
-    float vol, tx;
-    while (lireLigneCSV(f, &ligne)) {
-        if (identifierTypeLigne(&ligne) == TYPE_SOURCE_USINE) {
-            extraireIDAval(&ligne, idAval);
-            if (strcmp(idAval, idUsine) == 0) {
-                extraireVolume(&ligne, &vol);
-                extraireTaux(&ligne, &tx);
-                if (tx < 0) tx = 0;
-                volumeInitial += vol * (1.0 - tx/100.0);
-            }
+
+        // CAS 2 : Consommation (Ce qui sort)
+        else if (type == TYPE_RACCORDEMENT_USAGER || type == TYPE_USINE_NOEUD) {
+            extraireIDAmont(&ligne, id);  // ID de la Station (Source du lien)
+            extraireVolume(&ligne, &val); // Volume
+            
+            insererAVL(avl, id);
+            NoeudAVL* n = rechercherUsine(avl, id);
+            // On stocke le TOTAL SORTANT dans volumeTraite
+            if (n) ajouterVolumeTraite(n, val); 
         }
     }
     fermerFichierCSV(f);
 
-    // Phase 3 : Calcul final
-    double totalFuites = 0;
-    calculerFuitesRec(racine, volumeInitial, &totalFuites);
+    // 3. Recherche et Calcul
+    NoeudAVL* cible = rechercherUsine(avl, idRecherche);
 
+    // 4. Écriture du fichier de sortie
     creerRepertoire("output");
-    FILE* out = fopen("output/rendement.dat", "w");
-    if (out) {
-        fprintf(out, "identifier;leak volume (M.m3.year-1)\n");
-        // Sortie brute (k.m3 ou M.m3 selon unité d'entrée, ici on garde l'unité d'entrée)
-        fprintf(out, "%s;%.6f\n", idUsine, totalFuites);
-        fclose(out);
-        printf("Fuites totales : %.2f\n", totalFuites);
+    FILE* out = fopen("output/leaks.dat", "w");
+    if (!out) { libererAVL(avl); return 2; }
+
+    fprintf(out, "identifier;Leak volume (M.m3.year-1)\n");
+
+    if (cible) {
+        // LE CALCUL DE LA FUITE EST ICI :
+        float entrant = cible->volumeCapte;
+        float sortant = cible->volumeTraite;
+        float fuite = entrant - sortant;
+        
+        // Si la fuite est négative (impossible physiquement mais possible si données bizarres), on met 0 ou on laisse
+        // Pour l'affichage, on garde la valeur brute.
+        
+        fprintf(out, "%s;%.1f\n", idRecherche, fuite);
+        printf(" -> Usine trouvée. Entrée: %.1f | Sortie: %.1f | Fuite: %.1f\n", entrant, sortant, fuite);
+    } else {
+        printf("ERREUR : L'usine '%s' n'existe pas dans le fichier.\n", idRecherche);
+        fprintf(out, "%s;0\n", idRecherche);
     }
 
-    libererArbre(racine);
-    freeRef(index);
+    fclose(out);
+    libererAVL(avl);
     return 0;
 }
