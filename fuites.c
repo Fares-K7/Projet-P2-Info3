@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// --- AJOUT : Fonction récursive pour le bonus "all" ---
 void _parcoursFuites(NoeudAVL* n, FILE* out) {
     if (n == NULL) return;
 
@@ -19,8 +18,7 @@ void _parcoursFuites(NoeudAVL* n, FILE* out) {
 
     // Conversion en Millions
     float fuiteM = fuite / 1000000.0;
-
-    // On écrit si non nul (avec le \n pour le saut de ligne)
+    
     if (fuiteM > 0.0 && (n->volumeCapte > 0 || n->volumeTraite > 0)) {
         fprintf(out, "%s;%.3f\n", n->identifiant, fuiteM);
     }
