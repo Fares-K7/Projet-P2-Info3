@@ -5,18 +5,18 @@ make clean && make
 
 ./script.sh c-wildwater_v0.dat histo max
 
-#pour l'autorisation:
+# pour l'autorisation:
 
 chmod u+x script.sh
 
-#histogrammes :
+# histogrammes :
 
 ./script.sh c-wildwater_v3.dat histo max
 ./script.sh c-wildwater_v3.dat histo src
 ./script.sh c-wildwater_v3.dat histo real
 leaks : ./script.sh c-wildwater_v3.dat leaks "Plant #TF300295S"
 
-#pour cloner le github
+# pour cloner le github
 
 cd ~
 
