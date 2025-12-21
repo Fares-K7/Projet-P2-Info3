@@ -1,45 +1,24 @@
-Voici un modèle complet pour ton **Rapport de Projet (PDF)**. Ce document est obligatoire et doit être présent dans ton dépôt Git.
+2025-2026 – Pré-ING2
+CY Tech
+MEF-D
 
-Il doit être professionnel, honnête et bien structuré. Tu peux copier ce contenu dans un document Word ou LaTeX, le personnaliser avec tes vrais noms et screenshots, puis l'exporter en PDF.
+Gregoire Chaumont
+Kassar Fares
+Carré Tomas
 
----
-
-# RAPPORT DE PROJET : C-WildWater
-
-**Année universitaire :** 2025-2026 – Pré-ING2
-**École :** CY Tech
-**Groupe :** [Numéro ou Nom du groupe]
-
-**Membres de l'équipe :**
-
-* **Prénom NOM** (Chef de projet / Développeur C)
-* **Prénom NOM** (Développeur Shell / Gnuplot)
-* **Prénom NOM** (Développeur C / Intégration)
-
----
-
-## 1. Introduction
-
-Ce projet, intitulé "C-WildWater", vise à développer une solution logicielle performante pour analyser un réseau de distribution d'eau fictif mais réaliste (similaire à 1/3 du réseau français). L'objectif était de traiter un fichier de données volumineux (CSV > 500Mo) pour extraire des statistiques sur les usines de traitement et calculer les pertes d'eau (fuites) sur le réseau aval.
+Ce projet, intitulé "C-WildWater", vise à développer une solution logicielle performante pour analyser un réseau de distribution d'eau fictif mais réaliste. 
+L'objectif était de traiter un fichier de données volumineux  pour extraire des statistiques sur les usines de traitement et calculer les pertes d'eau.
 
 L'application combine un script Shell pour l'interface utilisateur et l'automatisation, et un programme en langage C pour le traitement intensif des données et la gestion de la mémoire.
 
-## 2. Organisation et Planification
+Nous avons séparé le travail de manière simple et efficace.
 
-2.1 Répartition des tâches 
-
-Nous avons séparé le travail en modules distincts pour faciliter le développement parallèle via Git.
-
-| Membre | Responsabilités principales |
-| --- | --- |
-| **Étudiant A** | **Architecture C & AVL (Histo)**<br>
+Grégoire Chaumont: Code C 
 
 <br>- Conception des structures `Usine` et `AVL`.<br>
+<br>- Implémentation du parsing CSV.<br>
 
-<br>- Implémentation du parsing CSV (détection des types de lignes).<br>
-
-<br>- Gestion de la mémoire (allocation/libération). |
-| **Étudiant B** | **Scripting Shell & Gnuplot**<br>
+<br>Kassar Fares: Script Shell & Gnuplot<br>
 
 <br>- Création du script `myScript.sh` (gestion des arguments, aide).<br>
 
@@ -134,14 +113,3 @@ Durée : 2 secondes.
 ## 7. Conclusion
 
 Ce projet nous a permis de comprendre l'importance des structures de données adaptées (AVL) pour traiter de grands volumes de données. La séparation Shell/C est une architecture puissante qui allie flexibilité et performance. Nous avons également appris à travailler en équipe avec Git, en gérant les conflits et en synchronisant nos avancées.
-
----
-
-### 💡 Conseils pour ton PDF :
-
-1. **Personnalise la partie "Limitations" :** Si tu as réussi les bonus, mets-les en vert ! Si tu as un bug connu (ex: ça plante si le fichier n'existe pas), sois honnête et mets-le en orange. Les profs préfèrent l'honnêteté à un bug "caché".
-2. 
-**Captures d'écran :** Le sujet demande explicitement des preuves visuelles dans le dossier `tests` et dans le PDF. Fais des captures de tes graphes.
-
-
-3. **Mise en forme :** Utilise une police lisible (Arial, Roboto), justifie le texte, et mets des titres clairs.
