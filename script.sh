@@ -65,7 +65,6 @@ if [ "$CMD" = "histo" ]; then
     echo "[4/4] Génération des graphiques avec légendes..."
 
     # --- Graphique MAX ---
-    # Ajout de xlabel et ylabel pour avoir "plus de valeurs" affichées
     gnuplot -e "
         set terminal png size 1200,800; 
         set output 'tests/${OPT}_max.png'; 
@@ -78,7 +77,6 @@ if [ "$CMD" = "histo" ]; then
     "
     
     # --- Graphique MIN ---
-    # Ici on met la police un peu plus petite sur X car il y a 50 valeurs
     gnuplot -e "
         set terminal png size 1200,800; 
         set output 'tests/${OPT}_min.png'; 
@@ -98,7 +96,6 @@ fi
 if [ "$CMD" = "leaks" ]; then
     echo "[3/4] Résultats des fuites pour : $OPT"
     
-    # CORRECTION ICI : On pointe vers le nom fixe défini dans fuites.c
     LEAK_FILE="output/leaks.dat"
 
     if [ ! -f "$LEAK_FILE" ]; then
@@ -108,7 +105,6 @@ if [ "$CMD" = "leaks" ]; then
 
     echo ""
     echo "========================================================"
-    # On utilise cat simple car column n'est peut-être pas installé ou bug avec les espaces
     cat "$LEAK_FILE"
     echo "========================================================"
     echo ""
