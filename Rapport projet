@@ -6,17 +6,14 @@ Gregoire Chaumont
 Kassar Fares
 Carré Tomas
 
-Ce projet, intitulé "C-WildWater", vise à développer une solution logicielle performante pour analyser un réseau de distribution d'eau fictif mais réaliste. L'objectif était de traiter un fichier de données volumineux  pour extraire des statistiques sur les usines de traitement et calculer les pertes d'eau.
+Ce projet, intitulé "C-WildWater", vise à développer une solution logicielle performante pour analyser un réseau de distribution d'eau fictif mais réaliste. 
+L'objectif était de traiter un fichier de données volumineux  pour extraire des statistiques sur les usines de traitement et calculer les pertes d'eau.
 
 L'application combine un script Shell pour l'interface utilisateur et l'automatisation, et un programme en langage C pour le traitement intensif des données et la gestion de la mémoire.
 
-2.1 Répartition des tâches 
+Nous avons séparé le travail de manière simple et efficace.
 
-Nous avons séparé le travail en modules distincts pour faciliter le développement parallèle via Git.
-
-| Membre | Responsabilités principales |
-| --- | --- |
-| **Étudiant A** | **Architecture C & AVL (Histo)**<br>
+Grégoire Chaumont **Architecture C & AVL (Histo)**
 
 <br>- Conception des structures `Usine` et `AVL`.<br>
 
