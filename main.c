@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "usine.h"
-#include "fuites.h" // Assure-toi d'avoir ce fichier ou commente si non utilisé
+#include "fuites.h" 
 #include "utils.h"
 
 int main(int argc, char* argv[]) {
@@ -34,8 +34,6 @@ int main(int argc, char* argv[]) {
     
     // --- MODE FUITES (LEAKS) ---
     else if (strcmp(mode, "leaks") == 0) {
-        // Ici 'param' est un identifiant d'usine (ex: "Facility complex #RH...")
-        // On ne le vérifie pas, on le passe tel quel.
         return traiterFuites(fichier, param);
     }
     
