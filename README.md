@@ -19,7 +19,10 @@ leaks : ./script.sh c-wildwater_v3.dat leaks "Plant #TF300295S"
 pour cloner le github
 
 cd ~
+
 mkdir test_github
+
 cd test_github
+
 git clone https://github.com/Fares-K7/Projet-P2-Info3.git
 cd Projet-P2-Info3
