@@ -69,16 +69,14 @@ int traiterFuites(const char* fichierCSV, const char* idRecherche) {
     if (!out) { libererAVL(avl); return 2; }
 
     fprintf(out, "identifier;Leak volume (M.m3.year-1)\n");
-
-    // --- MODIFICATION ICI POUR GÉRER "ALL" ET LES UNITÉS ---
     
     if (strcmp(idRecherche, "all") == 0) {
-        // CAS BONUS : On parcourt tout l'arbre
+        //On parcourt tout l'arbre
         _parcoursFuites(avl->racine, out);
         printf(" -> Export de toutes les fuites terminé.\n");
     }
     else {
-        // CAS CLASSIQUE : Une seule usine
+        //Une seule usine
         NoeudAVL* cible = rechercherUsine(avl, idRecherche);
         
         if (cible) {
