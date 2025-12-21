@@ -1,19 +1,10 @@
-Voici un modèle complet pour ton **Rapport de Projet (PDF)**. Ce document est obligatoire et doit être présent dans ton dépôt Git.
+2025-2026 – Pré-ING2
+CY Tech
+MEF-D
 
-Il doit être professionnel, honnête et bien structuré. Tu peux copier ce contenu dans un document Word ou LaTeX, le personnaliser avec tes vrais noms et screenshots, puis l'exporter en PDF.
-
-
-# RAPPORT DE PROJET : C-WildWater
-
-**Année universitaire :** 2025-2026 – Pré-ING2
-**École :** CY Tech
-**Groupe :** [Numéro ou Nom du groupe]
-
-**Membres de l'équipe :**
-
-* **Prénom NOM** (Chef de projet / Développeur C)
-* **Prénom NOM** (Développeur Shell / Gnuplot)
-* **Prénom NOM** (Développeur C / Intégration)
+Gregoire Chaumont
+Kassar Fares
+Carré Tomas
 
 
 Ce projet, intitulé "C-WildWater", vise à développer une solution logicielle performante pour analyser un réseau de distribution d'eau fictif mais réaliste (similaire à 1/3 du réseau français). L'objectif était de traiter un fichier de données volumineux (CSV > 500Mo) pour extraire des statistiques sur les usines de traitement et calculer les pertes d'eau (fuites) sur le réseau aval.
