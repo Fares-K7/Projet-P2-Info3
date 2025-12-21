@@ -1,5 +1,5 @@
 # Projet-P2-Info3
-# nettoyage et compilation
+# Nettoyage et compilation
 make cleanfile 
 make clean && make
 
